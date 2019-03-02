@@ -29,7 +29,7 @@ public class TaskController {
     @RequestMapping(value = "/studyBmReq", method = RequestMethod.POST)
     public String studyBm(@RequestBody String req){
 
-        //https://yzyw.cpoc.cn/CPOCV2/modclasslearn/classbm_xuanYuanBm?classid=c201911381&rtnmsg=2&stuid=2000455058&txzh=2019lcjl1
+        //https://yzyw.cpoc.cn/CPOCV2/modclasslearn/classbm_xuanYuanBm?classid=c201911381&stuid=2000455058&txzh=2019lcjl1
 
         return "SUCCESS";
     }

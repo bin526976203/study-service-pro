@@ -112,7 +112,7 @@ public class StudyTaskService {
 
     private boolean requestBm(String stuid, String classid, String bmId){
         //https://yzyw.cpoc.cn/CPOCV2/modclasslearn/classbm_xuanYuanBm?
-        //classid=c201911381&rtnmsg=2&stuid=2000455058&txzh=2019lcjl1
+        //classid=c201911381&stuid=2000455058&txzh=2019lcjl1
 
         String url = "https://yzyw.cpoc.cn/CPOCV2/modclasslearn/classbm_xuanYuanBm?1=1";
 

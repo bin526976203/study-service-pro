@@ -31,6 +31,7 @@ public class StudyTaskRequestTest {
         User user2 = new User();
         user2.setIdcard("511028198807110029");
         users.add(user2);
+        User user = new User();
 
         List<Lesson> lessonVos = Lists.newArrayList();
         Lesson lesson = new Lesson();
