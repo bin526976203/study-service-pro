@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neo.mapper.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.neo.entity.Course">
+    <id column="course_id" jdbcType="VARCHAR" property="courseId" />
+    <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    <result column="course_study_time_hour" jdbcType="INTEGER" property="courseStudyTimeHour" />
+    <result column="course_study_time_min" jdbcType="INTEGER" property="courseStudyTimeMin" />
+    <result column="course_study_time_second" jdbcType="INTEGER" property="courseStudyTimeSecond" />
+    <result column="lesson_id" jdbcType="VARCHAR" property="lessonId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    course_id,lesson_id, course_name, course_study_time_hour, course_study_time_min, course_study_time_second
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course
+    where course_id = #{courseId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from course
+    where course_id = #{courseId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.neo.entity.Course">
+    insert into course (course_id,lesson_id, course_name, course_study_time_hour,
+      course_study_time_min, course_study_time_second
+      )
+    values (#{courseId,jdbcType=VARCHAR},#{lessonId,jdbcType=VARCHAR} , #{courseName,jdbcType=VARCHAR}, #{courseStudyTimeHour,jdbcType=INTEGER},
+      #{courseStudyTimeMin,jdbcType=INTEGER}, #{courseStudyTimeSecond,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.neo.entity.Course">
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="lessonId != null">
+        lesson_id,
+      </if>
+      <if test="courseName != null">
+        course_name,
+      </if>
+      <if test="courseStudyTimeHour != null">
+        course_study_time_hour,
+      </if>
+      <if test="courseStudyTimeMin != null">
+        course_study_time_min,
+      </if>
+      <if test="courseStudyTimeSecond != null">
+        course_study_time_second,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonId != null">
+        #{lessonId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null">
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseStudyTimeHour != null">
+        #{courseStudyTimeHour,jdbcType=INTEGER},
+      </if>
+      <if test="courseStudyTimeMin != null">
+        #{courseStudyTimeMin,jdbcType=INTEGER},
+      </if>
+      <if test="courseStudyTimeSecond != null">
+        #{courseStudyTimeSecond,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neo.entity.Course">
+    update course
+    <set>
+      <if test="lessonId != null">
+        lesson_id = #{lessonId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null">
+        course_name = #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseStudyTimeHour != null">
+        course_study_time_hour = #{courseStudyTimeHour,jdbcType=INTEGER},
+      </if>
+      <if test="courseStudyTimeMin != null">
+        course_study_time_min = #{courseStudyTimeMin,jdbcType=INTEGER},
+      </if>
+      <if test="courseStudyTimeSecond != null">
+        course_study_time_second = #{courseStudyTimeSecond,jdbcType=INTEGER},
+      </if>
+    </set>
+    where course_id = #{courseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.neo.entity.Course">
+    update course
+    set lesson_id = #{lessonId,jdbcType=VARCHAR},
+      course_name = #{courseName,jdbcType=VARCHAR},
+      course_study_time_hour = #{courseStudyTimeHour,jdbcType=INTEGER},
+      course_study_time_min = #{courseStudyTimeMin,jdbcType=INTEGER},
+      course_study_time_second = #{courseStudyTimeSecond,jdbcType=INTEGER}
+    where course_id = #{courseId,jdbcType=VARCHAR}
+  </update>
+</mapper>
