@@ -8,9 +8,12 @@
     <result column="lesson_study_hour" jdbcType="INTEGER" property="lessonStudyHour" />
     <result column="lesson_study_min" jdbcType="INTEGER" property="lessonStudyMin" />
     <result column="lesson_study_second" jdbcType="INTEGER" property="lessonStudySecond" />
+    <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="bm_id" jdbcType="VARCHAR" property="bmId" />
   </resultMap>
   <sql id="Base_Column_List">
-    lesson_id, course_id, lesson_name, lesson_study_hour, lesson_study_min, lesson_study_second
+    lesson_id, course_id, lesson_name, lesson_study_hour, lesson_study_min, lesson_study_second, 
+    class_id, bm_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -24,11 +27,11 @@
   </delete>
   <insert id="insert" parameterType="com.neo.entity.Lesson">
     insert into lesson (lesson_id, course_id, lesson_name, 
-      lesson_study_hour, lesson_study_min, lesson_study_second
-      )
+      lesson_study_hour, lesson_study_min, lesson_study_second, 
+      class_id, bm_id)
     values (#{lessonId,jdbcType=VARCHAR}, #{courseId,jdbcType=VARCHAR}, #{lessonName,jdbcType=VARCHAR}, 
-      #{lessonStudyHour,jdbcType=INTEGER}, #{lessonStudyMin,jdbcType=INTEGER}, #{lessonStudySecond,jdbcType=INTEGER}
-      )
+      #{lessonStudyHour,jdbcType=INTEGER}, #{lessonStudyMin,jdbcType=INTEGER}, #{lessonStudySecond,jdbcType=INTEGER}, 
+      #{classId,jdbcType=VARCHAR}, #{bmId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.neo.entity.Lesson">
     insert into lesson
@@ -51,6 +54,12 @@
       <if test="lessonStudySecond != null">
         lesson_study_second,
       </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="bmId != null">
+        bm_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="lessonId != null">
@@ -70,6 +79,12 @@
       </if>
       <if test="lessonStudySecond != null">
         #{lessonStudySecond,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="bmId != null">
+        #{bmId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -91,6 +106,12 @@
       <if test="lessonStudySecond != null">
         lesson_study_second = #{lessonStudySecond,jdbcType=INTEGER},
       </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="bmId != null">
+        bm_id = #{bmId,jdbcType=VARCHAR},
+      </if>
     </set>
     where lesson_id = #{lessonId,jdbcType=VARCHAR}
   </update>
@@ -100,7 +121,9 @@
       lesson_name = #{lessonName,jdbcType=VARCHAR},
       lesson_study_hour = #{lessonStudyHour,jdbcType=INTEGER},
       lesson_study_min = #{lessonStudyMin,jdbcType=INTEGER},
-      lesson_study_second = #{lessonStudySecond,jdbcType=INTEGER}
+      lesson_study_second = #{lessonStudySecond,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=VARCHAR},
+      bm_id = #{bmId,jdbcType=VARCHAR}
     where lesson_id = #{lessonId,jdbcType=VARCHAR}
   </update>
 </mapper>

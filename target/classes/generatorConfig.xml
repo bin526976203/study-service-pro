@@ -18,27 +18,22 @@
                         userId="root"
                         password="bin8852552110"/>
 
-        <javaModelGenerator targetPackage="yz.study.entity"
-                            targetProject="/Users/moxianbin/git/yz-study-service/src/main/java">
+        <javaModelGenerator targetPackage="com.neo.entity"
+                            targetProject="/Users/moxianbin/git/study-service-pro/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <sqlMapGenerator targetPackage="mapper"
-                         targetProject="/Users/moxianbin/git/yz-study-service/src/main/resources/mapper">
+                         targetProject="/Users/moxianbin/git/study-service-pro/src/main/resources/mapper">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator targetPackage="yz.study.mapper"
-                             targetProject="/Users/moxianbin/git/yz-study-service/src/main/java" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="com.neo.mapper"
+                             targetProject="/Users/moxianbin/git/study-service-pro/src/main/java" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="course" domainObjectName="course"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
 
         <table tableName="lesson" domainObjectName="lesson"
                enableCountByExample="false" enableUpdateByExample="false"
@@ -46,11 +41,6 @@
                selectByExampleQueryId="false">
         </table>
 
-        <table tableName="user" domainObjectName="user"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
 
     </context>
 </generatorConfiguration>
