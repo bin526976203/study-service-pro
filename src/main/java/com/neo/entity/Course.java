@@ -13,7 +13,9 @@ public class Course {
 
     private String lessonId;
 
-    public Course(String courseId,String lessonId, Integer courseStudyTimeHour, Integer courseStudyTimeMin, Integer courseStudyTimeSecond) {
+    public Course() {}
+
+    public Course(String courseId, String lessonId, Integer courseStudyTimeHour, Integer courseStudyTimeMin, Integer courseStudyTimeSecond) {
         this.courseId = courseId;
         this.courseStudyTimeHour = courseStudyTimeHour;
         this.courseStudyTimeMin = courseStudyTimeMin;

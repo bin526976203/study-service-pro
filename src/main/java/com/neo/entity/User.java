@@ -19,6 +19,8 @@ public class User {
 
     private String extend;
 
+    public User(){}
+
     public static User init(UserInfo userInfoExcel) {
         User user = new User();
         user.setIdcard(userInfoExcel.getAccount());

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.neo.entity.Course;
 import com.neo.entity.Lesson;
 import com.neo.entity.User;
 import com.neo.mapper.CourseMapper;
@@ -54,11 +55,13 @@ public class StudyTaskService {
     private final static String BM_SUCCESS_MSG = "1";
 
     public void batchBmAndStudy(List<User> users, List<Lesson> lessons){
-        //批量保存user 并返回空id的User
+        //批量保存user与返回studyId 并返回空id的User
         List<User> emptyIdUsers = cleanAndUpdateUsers(users);
+        //回填补充课程信息，已有课程信息
+        List<Lesson> fillLesson = fillLesson(lessons);
 
-        Map<User, Lesson> failBmMaps = batchBmReq(users, lessons);
-        Map<User, Lesson> failStudyMaps = execTaskAndGetFailMap(users, lessons);
+        Map<User, Lesson> failBmMaps = batchBmReq(users, fillLesson);
+        Map<User, Lesson> failStudyMaps = execTaskAndGetFailMap(users, fillLesson);
 
         log.info("空ID的users:{}", JSONObject.toJSONString(emptyIdUsers));
         log.info("报名失败的maps:{}", JSONObject.toJSONString(failBmMaps));
@@ -121,7 +124,7 @@ public class StudyTaskService {
         String result = HttpClient.get(url);
 
         if (!result.contains(BM_SUCCESS_MSG)) {
-            log.info("请求失败,url:{},result:{}", url, result);
+            log.info("报名请求失败,url:{},result:{}", url, result);
             return false;
         }
 
@@ -154,7 +157,7 @@ public class StudyTaskService {
         String firstUrl = initUrl + JSONObject.toJSONString(initReqYzParam);
         String result1 = HttpClient.get(firstUrl);
         if (!result1.contains(SUCCESS_MSG)){
-            log.info("first-fail,result:{},firstUrl:{}", firstUrl, result1);
+            log.info("邮政学习-first-fail,result:{},firstUrl:{}", firstUrl, result1);
             return false;
         }
 
@@ -167,7 +170,7 @@ public class StudyTaskService {
         String successUrl = initUrl + JSONObject.toJSONString(succReqYzParam);
         String result2 = HttpClient.get(successUrl);
         if (!result2.contains(SUCCESS_MSG)){
-            log.info("sec-fail,result:{},successUrl:{}", successUrl, result2);
+            log.info("邮政学习-sec-fail,result:{},successUrl:{}", successUrl, result2);
             return false;
         }
 
@@ -178,6 +181,23 @@ public class StudyTaskService {
         checkAndUpdateUsers(users);
         List<User> emptyIdUsers = removeAndGetEmptyIdUser(users);
         return emptyIdUsers;
+    }
+
+    public List<Lesson> fillLesson(List<Lesson> inputLessonList){
+        List<Lesson> fillLesson = Lists.newArrayList();
+        inputLessonList.forEach(inputLesson->{
+            Lesson selectLesson = lessonMapper.selectByPrimaryKey(inputLesson.getLessonId());
+            if (Objects.nonNull(selectLesson)) {
+                List<Course> courses = courseMapper.selectByLessonId(selectLesson.getLessonId());
+                selectLesson.setCourses(courses);
+                fillLesson.add(selectLesson);
+            } else {
+                //数据库中不存在，只能使用传入进来的课程
+                fillLesson.add(inputLesson);
+            }
+        });
+
+        return fillLesson;
     }
 
     public void checkAndUpdateUsers(List<User> users){
