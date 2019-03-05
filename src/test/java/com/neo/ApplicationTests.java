@@ -45,7 +45,7 @@ public class ApplicationTests {
 
 	@Test
 	public void test2(){
-		List<UserInfo> userInfos = ExcelImportUtil.importExcel(new File("D:/g工作/study-service-pro-master/src/main/resources/模板.xlsx"),
+		List<UserInfo> userInfos = ExcelImportUtil.importExcel(new File("D:/g工作/study-service-pro-master/src/main/resources/3.5听课(1).xlsx"),
 				UserInfo.class, new ImportParams());
 
 		log.info("{}", JSONObject.toJSONString(userInfos));
@@ -75,6 +75,12 @@ public class ApplicationTests {
 		lessonVos.add(lesson);
 
 		studyTaskService.batchBmAndStudy(users, lessonVos);
+
+		try {
+			Thread.sleep(3600*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test

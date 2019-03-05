@@ -40,8 +40,8 @@ public class ReqYzParam {
         this.status = status;
         this.duration = duration;
         this.learntimeyx = learntimeyx;
-        this.btime = btime;
-        this.intime = intime;
+        this.btime = btime + "Z";
+        this.intime = intime + "Z";
         this.pass = pass;
     }
 

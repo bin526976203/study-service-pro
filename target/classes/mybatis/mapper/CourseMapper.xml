@@ -103,4 +103,9 @@
       course_study_time_second = #{courseStudyTimeSecond,jdbcType=INTEGER}
     where course_id = #{courseId,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectByLessonId" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from course where lesson_id = #{lessonId}
+  </select>
 </mapper>

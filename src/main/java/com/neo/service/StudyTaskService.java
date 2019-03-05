@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.neo.RequestStudyThread;
 import com.neo.entity.Course;
 import com.neo.entity.Lesson;
 import com.neo.entity.User;
@@ -21,9 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author moxianbin on 2019/3/1.
@@ -41,6 +47,8 @@ public class StudyTaskService {
 
     @Autowired
     private UserMapper userMapper;
+
+    private static ExecutorService executorService = new ThreadPoolExecutor(100, 1000, 10L, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(100));
 
     /**
      *jQuery1112046735020497820434_1551485970076({"errcode":-1,
@@ -60,11 +68,11 @@ public class StudyTaskService {
         //回填补充课程信息，已有课程信息
         List<Lesson> fillLesson = fillLesson(lessons);
 
-        Map<User, Lesson> failBmMaps = batchBmReq(users, fillLesson);
+        //Map<User, Lesson> failBmMaps = batchBmReq(users, fillLesson);
         Map<User, Lesson> failStudyMaps = execTaskAndGetFailMap(users, fillLesson);
 
         log.info("空ID的users:{}", JSONObject.toJSONString(emptyIdUsers));
-        log.info("报名失败的maps:{}", JSONObject.toJSONString(failBmMaps));
+        //log.info("报名失败的maps:{}", JSONObject.toJSONString(failBmMaps));
         log.info("学习失败的maps:{}", JSONObject.toJSONString(failStudyMaps));
     }
 
@@ -100,15 +108,20 @@ public class StudyTaskService {
         Map<User, Lesson> failStudyMap = Maps.newHashMap();
         users.forEach(user -> {
 
-            lessonList.forEach(lesson -> {
-                lesson.getCourses().forEach(course -> {
-                    boolean success = requestStudy(user.getStudentId(), course.getCourseId(), course.getLessonId(),
-                            course.getCourseStudyTimeHour(), course.getCourseStudyTimeMin(), course.getCourseStudyTimeSecond());
-                    if (!success) {
-                        failStudyMap.put(user, lesson);
-                    }
-                });
-            });
+            RequestStudyThread studyThread = new RequestStudyThread(user.getStudentId(), lessonList);
+            executorService.execute(studyThread);
+//           for (Lesson lesson : lessonList){
+//                for (Course course:lesson.getCourses()){
+//                    int times = course.getCourseStudyTimeHour() * 60 + course.getCourseStudyTimeMin();
+//                    for (int i=0;i<times;i++) {
+//                        boolean success = requestStudy(user.getStudentId(), course.getCourseId(), course.getLessonId(),
+//                                course.getCourseStudyTimeHour(), course.getCourseStudyTimeMin(), course.getCourseStudyTimeSecond());
+//                        if (!success) {
+//                            failStudyMap.put(user, lesson);
+//                        }
+//                    }
+//                }
+//            }
         });
         return failStudyMap;
     }
@@ -144,7 +157,7 @@ public class StudyTaskService {
         String learnId = Utils.getLearnId(32);
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime changeNow = DateUtils.addMinutes(DateUtils.addHours(now, -(hour+1)), -min);
+        LocalDateTime changeNow = DateUtils.addMinutes(DateUtils.addHours(now, -(hour+9)), -min);
         int studyTime = ( hour*3600 + min*60 + sec ) * 1000;
 
         String initUrl = "https://lrs.cpoc.cn/logsvc/op_report.ashx?cmd=2&stuid=" + stuid +
@@ -156,9 +169,16 @@ public class StudyTaskService {
         //http 请求要进行ip转换
         String firstUrl = initUrl + JSONObject.toJSONString(initReqYzParam);
         String result1 = HttpClient.get(firstUrl);
+        log.info("邮政学习-first,result:{},firstUrl:{}", firstUrl, result1);
         if (!result1.contains(SUCCESS_MSG)){
             log.info("邮政学习-first-fail,result:{},firstUrl:{}", firstUrl, result1);
             return false;
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         ReqYzParam succReqYzParam = new ReqYzParam(stuid,courseId,lessonid,learnId,
@@ -169,6 +189,7 @@ public class StudyTaskService {
         //http 请求要进行ip转换
         String successUrl = initUrl + JSONObject.toJSONString(succReqYzParam);
         String result2 = HttpClient.get(successUrl);
+        log.info("邮政学习-sec,result:{},successUrl:{}", successUrl, result2);
         if (!result2.contains(SUCCESS_MSG)){
             log.info("邮政学习-sec-fail,result:{},successUrl:{}", successUrl, result2);
             return false;
