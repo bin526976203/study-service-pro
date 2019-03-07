@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author moxianbin on 2019/3/1.
@@ -63,5 +64,12 @@ public class StudyTaskRequestTest {
     public void testStringsIsEmpty(){
 
         System.err.print(Strings.isNullOrEmpty(null));
+    }
+
+    @Test
+    public void testRandomNextInt(){
+        Random random = new Random();
+
+        log.info("random.nextInt(10):{}", random.nextInt(10));
     }
 }

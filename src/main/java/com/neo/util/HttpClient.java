@@ -1,10 +1,15 @@
 package com.neo.util;
 
+import com.alibaba.fastjson.JSONObject;
+import com.neo.util.proxy.ProxyItem;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -76,6 +81,8 @@ public class HttpClient {
         }
     }
 
+
+
     /**
      * get请求
      *
@@ -84,23 +91,7 @@ public class HttpClient {
      * @throws IOException
      */
     public static String get(String url){
-        Response response = null;
-        try {
-            try {
-                response = get(client, url);
-                if (response.isSuccessful()) {
-                    return response.body().string();
-                }
-            } catch (IOException e) {
-                log.error("请求出错,url:{}", url);
-            }
-
-            return null;
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-        }
+        return get(client, url);
     }
 
     /**
@@ -151,6 +142,32 @@ public class HttpClient {
         }
     }
 
+    public static String getClientByRandomProxy(List<ProxyItem> proxyItems, String url){
+        ProxyItem item = ProxyUtils.getRandomProxyItem(proxyItems);
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(item.getIp(), item.getPort()));
+
+        OkHttpClient httpClient = (new OkHttpClient.Builder()).
+                connectTimeout(30L, TimeUnit.SECONDS).
+                readTimeout(60L, TimeUnit.SECONDS).
+                proxy(proxy).
+                build();
+
+        log.info("使用的代理item:{},httpClient:{}",JSONObject.toJSONString(item), JSONObject.toJSONString(httpClient));
+
+        return get(httpClient, url);
+    }
+
+    public static OkHttpClient getClientByRandomProxy(){
+        ProxyItem item = ProxyUtils.getRandomProxyItem();
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(item.getIp(), item.getPort()));
+
+        return (new OkHttpClient.Builder()).
+                connectTimeout(30L, TimeUnit.SECONDS).
+                readTimeout(60L, TimeUnit.SECONDS).
+                proxy(proxy).
+                build();
+    }
+
     private static Response postJson(OkHttpClient httpClient, String url, String json) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = (new okhttp3.Request.Builder()).url(url).post(body).build();
@@ -167,10 +184,23 @@ public class HttpClient {
         return httpClient.newCall(request).execute();
     }
 
-    private static Response get(OkHttpClient client, String url) throws IOException {
+    private static String get(OkHttpClient client, String url){
         Request request = (new okhttp3.Request.Builder()).url(url).build();
-        Response response = client.newCall(request).execute();
-        return response;
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            log.info("请求出错,url:{}", url);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+
+        return null;
     }
     
 }

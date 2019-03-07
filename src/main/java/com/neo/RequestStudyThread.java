@@ -1,11 +1,15 @@
 package com.neo;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.neo.entity.Course;
 import com.neo.entity.Lesson;
 import com.neo.util.DateUtils;
 import com.neo.util.HttpClient;
+import com.neo.util.ProxyUtils;
 import com.neo.util.Utils;
+import com.neo.util.proxy.ProxyItem;
+import com.neo.util.proxy.ProxyList;
 import com.neo.vo.reqYz.Constant;
 import com.neo.vo.reqYz.ReqYzParam;
 import org.slf4j.Logger;
@@ -36,24 +40,25 @@ public class RequestStudyThread implements Runnable {
 
     @Override
     public void run() {
+        ProxyList proxyList = ProxyUtils.getProxyList();
         lessons.forEach(lesson -> {
             lesson.getCourses().forEach(course -> {
                 int times = course.getCourseStudyTimeHour() * 60 + course.getCourseStudyTimeMin();
                 for (int i=0;i<times;i++){
-                    userStudyLesson(course, lesson.getLessonId(), stuid);
+                    userStudyLesson(proxyList.getProxies(), course, lesson.getLessonId(), stuid);
                 }
             });
         });
     }
 
-    public void userStudyLesson(Course course, String lessonId, String stuid){
+    public void userStudyLesson(List<ProxyItem> proxyItems, Course course, String lessonId, String stuid){
         String learnId = Utils.getLearnId(32);
 
         LocalDateTime now = LocalDateTime.now();
         int hour = course.getCourseStudyTimeHour();
         int min = course.getCourseStudyTimeMin();
         int sec = course.getCourseStudyTimeSecond();
-        LocalDateTime changeNow = DateUtils.addMinutes(DateUtils.addHours(now, -(hour+1)), -min);
+        LocalDateTime changeNow = DateUtils.addMinutes(DateUtils.addHours(now, -hour), -(min+10));
         int studyTime = ( hour*3600 + min*60 + sec ) * 1000;
         String courseId = course.getCourseId();
 
@@ -65,14 +70,14 @@ public class RequestStudyThread implements Runnable {
                 Constant.STUDY_TASK_PASS_FAIL);
         //http 请求要进行ip转换
         String firstUrl = initUrl + JSONObject.toJSONString(initReqYzParam);
-        String result1 = HttpClient.get(firstUrl);
+        String result1 = HttpClient.getClientByRandomProxy(proxyItems,firstUrl);
         log.info("邮政学习-first,result:{},firstUrl:{}", firstUrl, result1);
         if (!result1.contains(SUCCESS_MSG)){
             log.info("邮政学习-first-fail,result:{},firstUrl:{}", firstUrl, result1);
         }
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -85,6 +90,7 @@ public class RequestStudyThread implements Runnable {
         //http 请求要进行ip转换
         String successUrl = initUrl + JSONObject.toJSONString(succReqYzParam);
         String result2 = HttpClient.get(successUrl);
+        log.info("邮政学习-sec,result:{},successUrl:{}", successUrl, result2);
         if (!result2.contains(SUCCESS_MSG)){
             log.info("邮政学习-sec-fail,result:{},successUrl:{}", successUrl, result2);
         }

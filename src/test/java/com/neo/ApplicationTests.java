@@ -45,7 +45,9 @@ public class ApplicationTests {
 
 	@Test
 	public void test2(){
-		List<UserInfo> userInfos = ExcelImportUtil.importExcel(new File("D:/g工作/study-service-pro-master/src/main/resources/3.5听课(1).xlsx"),
+		//D:/g工作/study-service-pro-master/src/main/resources/3.5听课(1).xlsx
+		// /Users/moxianbin/git/study-service-pro/src/main/resources
+		List<UserInfo> userInfos = ExcelImportUtil.importExcel(new File("/Users/moxianbin/git/study-service-pro/src/main/resources/3.5听课(1).xlsx"),
 				UserInfo.class, new ImportParams());
 
 		log.info("{}", JSONObject.toJSONString(userInfos));
