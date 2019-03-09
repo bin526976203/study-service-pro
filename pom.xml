@@ -78,6 +78,12 @@
             <artifactId>easypoi-annotation</artifactId>
             <version>3.2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -93,5 +99,7 @@
             </plugin>
         </plugins>
     </build>
+
+    <packaging>war</packaging>
 
 </project>

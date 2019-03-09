@@ -21,7 +21,7 @@ public class ExcelImportTest {
 
    private final static Logger log = LoggerFactory.getLogger(ExcelImportTest.class);
 
-    @Test
+    //@Test
     public void test(){
         List<UserInfo> userInfos = ExcelImportUtil.importExcel(new File("/Users/moxianbin/git/study-service-pro/src/main/resources//模板.xlsx"),
                 UserInfo.class, new ImportParams());

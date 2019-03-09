@@ -19,8 +19,6 @@ public class ProxyUtils {
 
     private final static org.slf4j.Logger log = LoggerFactory.getLogger(ProxyUtils.class);
 
-    private static OkHttpClient httpClient;
-
     private static String getProxyListUrl = "http://120.77.202.72:8899/api/v1/proxies?https=true";
 
     public static ProxyList getProxyList(){

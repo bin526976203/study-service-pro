@@ -20,10 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class ApplicationTests {
 
 	private final static Logger log = LoggerFactory.getLogger(ApplicationTests.class);
@@ -37,13 +38,17 @@ public class ApplicationTests {
 	@Autowired
 	private CourseMapper courseMapper;
 
-	@Test
+	//@Test
 	public void contextLoads() {
 		System.out.println("hello world");
 	}
 
+	//@Test
+	public void loadMb(){
+		excelImportService.batchBmAndStudyByExcel("user.xlsx", "lesson.xlsx");
+	}
 
-	@Test
+	//@Test
 	public void test2(){
 		//D:/g工作/study-service-pro-master/src/main/resources/3.5听课(1).xlsx
 		// /Users/moxianbin/git/study-service-pro/src/main/resources
@@ -85,7 +90,7 @@ public class ApplicationTests {
 		}
 	}
 
-	@Test
+	//@Test
 	public void selectCourseByLessonIdTest(){
 		List<Course> courses = courseMapper.selectByLessonId("8a8a834067159f62016716591ff101ec");
 		log.info("{}", JSONObject.toJSONString(courses));

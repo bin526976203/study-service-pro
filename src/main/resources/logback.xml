@@ -2,8 +2,8 @@
 <configuration>
 	<jmxConfigurator/>
 	<!-- 根据实际情况修改变量 -->
-	<property name="app-name" value="ya-study"/>
-	<property name="filename" value="ya-study"/>
+	<property name="app-name" value="yz-study"/>
+	<property name="filename" value="yz-study"/>
 	<property name="dev-group-name" value="mxb"/>
 	<!-- 根据实际情况修改变量 end-->
 	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">

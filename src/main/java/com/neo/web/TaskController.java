@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.neo.entity.Lesson;
 import com.neo.entity.User;
+import com.neo.service.ExcelImportService;
 import com.neo.service.StudyTaskService;
 import com.neo.vo.StudyTaskRequest;
 import org.slf4j.Logger;
@@ -25,6 +26,19 @@ public class TaskController {
 
     @Autowired
     private StudyTaskService studyTaskService;
+
+    @Autowired
+    private ExcelImportService excelImportService;
+
+    @RequestMapping(value = "/studyByExcelPath", method = RequestMethod.POST)
+    public String studyByExcelPath(@RequestParam(name = "userPath")String userPath,
+                                   @RequestParam(name = "lessonPath")String lessPath){
+
+        excelImportService.batchBmAndStudyByExcel(userPath, lessPath);
+
+        return "SUCCESS";
+    }
+
 
     @RequestMapping(value = "/studyBmReq", method = RequestMethod.POST)
     public String studyBm(@RequestBody String req){

@@ -1,5 +1,7 @@
 package com.neo.entity;
 
+import com.neo.entity.excel.CourseInfo;
+
 public class Course {
     private String courseId;
 
@@ -21,6 +23,16 @@ public class Course {
         this.courseStudyTimeMin = courseStudyTimeMin;
         this.courseStudyTimeSecond = courseStudyTimeSecond;
         this.lessonId = lessonId;
+    }
+
+    public static Course init(CourseInfo courseInfo){
+        Course course = new Course();
+        course.setLessonId(courseInfo.getLessonId());
+        course.setCourseId(courseInfo.getCourseId());
+        course.setCourseStudyTimeHour(courseInfo.getCourseHour());
+        course.setCourseStudyTimeMin(courseInfo.getCourseMin());
+
+        return course;
     }
 
     public String getCourseId() {

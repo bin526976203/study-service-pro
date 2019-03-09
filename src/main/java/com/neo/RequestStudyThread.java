@@ -70,14 +70,14 @@ public class RequestStudyThread implements Runnable {
                 Constant.STUDY_TASK_PASS_FAIL);
         //http 请求要进行ip转换
         String firstUrl = initUrl + JSONObject.toJSONString(initReqYzParam);
-        String result1 = HttpClient.getClientByRandomProxy(proxyItems,firstUrl);
+        String result1 = HttpClient.get(firstUrl);
         log.info("邮政学习-first,result:{},firstUrl:{}", firstUrl, result1);
         if (!result1.contains(SUCCESS_MSG)){
             log.info("邮政学习-first-fail,result:{},firstUrl:{}", firstUrl, result1);
         }
 
         try {
-            Thread.sleep(800);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
