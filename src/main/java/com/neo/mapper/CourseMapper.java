@@ -20,4 +20,6 @@ public interface CourseMapper {
     int updateByPrimaryKey(Course record);
 
     List<Course> selectByLessonId(@Param("lessonId") String lessonId);
+
+    List<Course> selectByClassId(@Param("classId") String classId);
 }

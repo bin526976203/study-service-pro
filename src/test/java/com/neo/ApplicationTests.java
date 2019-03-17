@@ -44,11 +44,6 @@ public class ApplicationTests {
 	}
 
 	//@Test
-	public void loadMb(){
-		excelImportService.batchBmAndStudyByExcel("user.xlsx", "lesson.xlsx");
-	}
-
-	//@Test
 	public void test2(){
 		//D:/g工作/study-service-pro-master/src/main/resources/3.5听课(1).xlsx
 		// /Users/moxianbin/git/study-service-pro/src/main/resources

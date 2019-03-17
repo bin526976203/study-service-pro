@@ -25,13 +25,13 @@ public class RequestStudyThread implements Runnable {
     private final static Logger log = LoggerFactory.getLogger(RequestStudyThread.class);
 
     private String stuid;
-    private List<Lesson> lessons;
+    private List<Course> courses;
 
     private final static String SUCCESS_MSG = "succeeded";
 
-    public RequestStudyThread(String stuid, List<Lesson> lessons) {
+    public RequestStudyThread(String stuid, List<Course> courses) {
         this.stuid = stuid;
-        this.lessons = lessons;
+        this.courses = courses;
     }
 
     /**
@@ -41,13 +41,11 @@ public class RequestStudyThread implements Runnable {
     @Override
     public void run() {
         ProxyList proxyList = ProxyUtils.getProxyList();
-        lessons.forEach(lesson -> {
-            lesson.getCourses().forEach(course -> {
-                int times = course.getCourseStudyTimeHour() * 60 + course.getCourseStudyTimeMin();
-                for (int i=0;i<times;i++){
-                    userStudyLesson(proxyList.getProxies(), course, lesson.getLessonId(), stuid);
-                }
-            });
+        courses.forEach(course -> {
+            int times = course.getCourseStudyTimeHour() * 60 + course.getCourseStudyTimeMin();
+            for (int i=0;i<times;i++){
+                userStudyLesson(proxyList.getProxies(), course, course.getLessonId(), stuid);
+            }
         });
     }
 
@@ -58,14 +56,15 @@ public class RequestStudyThread implements Runnable {
         int hour = course.getCourseStudyTimeHour();
         int min = course.getCourseStudyTimeMin();
         int sec = course.getCourseStudyTimeSecond();
-        LocalDateTime changeNow = DateUtils.addMinutes(DateUtils.addHours(now, -hour), -(min+10));
-        int studyTime = ( hour*3600 + min*60 + sec ) * 1000;
+        LocalDateTime changeNow = DateUtils.addMinutes(now, -1);
+        int studyTime = 60 * 1000;
         String courseId = course.getCourseId();
+        String classId = course.getClassId();
 
         String initUrl = "https://lrs.cpoc.cn/logsvc/op_report.ashx?cmd=2&stuid=" + stuid +
                 "&courseid=" + courseId + "&callbackparam=jQuery1112029704261820561495_1551286014800&param=";
 
-        ReqYzParam initReqYzParam = new ReqYzParam(stuid,courseId,lessonId,learnId,
+        ReqYzParam initReqYzParam = new ReqYzParam(stuid,classId,courseId,lessonId,learnId,
                 Constant.STUDY_TASK_STATUS_START, 0, 0, Utils.getUnixTime(changeNow), Utils.getUnixTime(changeNow),
                 Constant.STUDY_TASK_PASS_FAIL);
         //http 请求要进行ip转换
@@ -82,7 +81,7 @@ public class RequestStudyThread implements Runnable {
             e.printStackTrace();
         }
 
-        ReqYzParam succReqYzParam = new ReqYzParam(stuid,courseId,lessonId,learnId,
+        ReqYzParam succReqYzParam = new ReqYzParam(stuid,classId,courseId,lessonId,learnId,
                 Constant.STUDY_TASK_STATUS_SUCCSS, studyTime, studyTime,
                 Utils.getUnixTime(changeNow),
                 Utils.getUnixTime(LocalDateTime.now()),

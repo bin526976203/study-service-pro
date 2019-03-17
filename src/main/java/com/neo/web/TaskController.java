@@ -31,38 +31,17 @@ public class TaskController {
     private ExcelImportService excelImportService;
 
     @RequestMapping(value = "/studyByExcelPath", method = RequestMethod.POST)
-    public String studyByExcelPath(@RequestParam(name = "userPath")String userPath,
-                                   @RequestParam(name = "lessonPath")String lessPath){
+    public String studyByExcelPath(@RequestParam(name = "userPath")String userPath){
 
-        excelImportService.batchBmAndStudyByExcel(userPath, lessPath);
-
+        excelImportService.batchStudyByUserExcel(userPath);
         return "SUCCESS";
     }
 
+    @RequestMapping(value = "/insertLessons", method = RequestMethod.POST)
+    public String insertLessons(@RequestParam(name = "lessonPath")String lessonPath){
 
-    @RequestMapping(value = "/studyBmReq", method = RequestMethod.POST)
-    public String studyBm(@RequestBody String req){
-
-        //https://yzyw.cpoc.cn/CPOCV2/modclasslearn/classbm_xuanYuanBm?classid=c201911381&stuid=2000455058&txzh=2019lcjl1
-
-        return "SUCCESS";
-    }
-
-    @RequestMapping(value = "/studyTaskReq", method = RequestMethod.POST)
-    @ResponseBody
-    public String studyTask(@RequestBody String req){
-        log.info("接收到学习任务请求:{}", req);
-
-        StudyTaskRequest request = JSONObject.parseObject(req, StudyTaskRequest.class);
-        List<User> users = request.getUsers();
-        List<Lesson> lessonVoList = request.getLessons();
-
-        List<User> emptyIdUsers = studyTaskService.cleanAndUpdateUsers(users);
-        Map<User, Lesson> failStudyMap = studyTaskService.execTaskAndGetFailMap(users, lessonVoList);
-
-        if (!failStudyMap.isEmpty()){
-            return "空studyIdUsers:"+JSONObject.toJSONString(emptyIdUsers)+";请求失败的用户课程Map:"+JSONObject.toJSONString(failStudyMap);
-        }
+        List<Lesson> lessons = excelImportService.getLessonsByExcelPath(lessonPath);
+        studyTaskService.checkAndSaveLesson(lessons);
 
         return "SUCCESS";
     }

@@ -31,8 +31,9 @@ public class ReqYzParam {
     private String intime;
     private int pass;
 
-    public ReqYzParam(String stuid, String courseid, String lessonid, String learnid, int status,
+    public ReqYzParam(String stuid, String classid, String courseid, String lessonid, String learnid, int status,
                       int duration, int learntimeyx, String btime, String intime, int pass) {
+        this.classid = classid;
         this.stuid = stuid;
         this.courseid = courseid;
         this.lessonid = lessonid;

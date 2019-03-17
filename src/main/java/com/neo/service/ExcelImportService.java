@@ -9,6 +9,8 @@ import com.neo.entity.Lesson;
 import com.neo.entity.User;
 import com.neo.entity.excel.CourseInfo;
 import com.neo.entity.excel.UserInfo;
+import com.neo.mapper.CourseMapper;
+import com.neo.mapper.LessonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,35 +34,61 @@ public class ExcelImportService {
     @Autowired
     private StudyTaskService studyTaskService;
 
-    public void batchBmAndStudyByExcel(String userExcelPath, String lessonExcelPath){
+    @Autowired
+    private LessonMapper lessonMapper;
 
-        List<User> users = getUsersByExcelPath(userExcelPath);
+    @Autowired
+    private CourseMapper courseMapper;
+
+    public void batchStudyByUserExcel(String userExcelPath){
+        List<UserInfo> userInfoList = ExcelImportUtil.importExcel(new File(userExcelPath),
+                UserInfo.class, new ImportParams());
+        List<User> users = getUsersBy(userInfoList);
         log.info("excelsUser:{}", JSONObject.toJSONString(users));
 
-        List<Lesson> lessons = getLessonsByExcelPath(lessonExcelPath);
-        log.info("excelLesson:{}", JSONObject.toJSONString(lessons));
-        studyTaskService.batchBmAndStudy(users, lessons);
+        studyTaskService.batchStudy(users);
     }
 
-    /**
-     * 根据模板获取出UserInfo信息
-     * @param path
-     * @return
-     */
-    public List<User> getUsersByExcelPath(String path){
-        List<UserInfo> userInfoList = ExcelImportUtil.importExcel(new File(path),
-                UserInfo.class, new ImportParams());
-
+    private List<User> getUsersBy(List<UserInfo> userInfoList) {
         //去除空的user
         userInfoList = userInfoList.stream().filter(userInfo -> Objects.nonNull(userInfo.getAccount())).
                 collect(Collectors.toList());
 
+        //取得用户信息与即将进行学习的lesson信息
         List<User> users = Lists.newArrayList();
         userInfoList.forEach(userInfo -> {
-            users.add(User.init(userInfo));
+            User user = User.init(userInfo);
+            user.setCourses(getCoursesByClassId(userInfo.getClassId()));
+            users.add(user);
+
         });
 
         return users;
+    }
+
+    public List<Course> getCoursesByClassId(String classId){
+        List<Course> courses = courseMapper.selectByClassId(classId);
+        return courses;
+    }
+
+    public List<Lesson> getLessonsByClassId(String classId){
+        List<Lesson> lessons = lessonMapper.selectByClassId(classId);
+
+        lessons.forEach(lesson -> {
+            List<Course> courseList = courseMapper.selectByLessonId(lesson.getLessonId());
+            lesson.setCourses(courseList);
+        });
+
+        return lessons;
+    }
+
+    public Lesson getLessonByLessonId(String lessonId){
+        List<Course> courseList = courseMapper.selectByLessonId(lessonId);
+
+        Lesson lesson = lessonMapper.selectByPrimaryKey(lessonId);
+        lesson.setCourses(courseList);
+
+        return lesson;
     }
 
     public List<Lesson> getLessonsByExcelPath(String path){

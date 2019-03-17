@@ -2,6 +2,8 @@ package com.neo.entity;
 
 import com.neo.entity.excel.UserInfo;
 
+import java.util.List;
+
 public class User {
     private String idcard;
 
@@ -18,6 +20,11 @@ public class User {
     private String company;
 
     private String extend;
+
+    /**
+     * 这个用户即将需要进行学习的课程
+     */
+    private List<Course> courses;
 
     public User(){}
 
@@ -92,5 +99,13 @@ public class User {
 
     public void setExtend(String extend) {
         this.extend = extend == null ? null : extend.trim();
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

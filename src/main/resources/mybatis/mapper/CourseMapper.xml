@@ -8,9 +8,10 @@
     <result column="course_study_time_min" jdbcType="INTEGER" property="courseStudyTimeMin" />
     <result column="course_study_time_second" jdbcType="INTEGER" property="courseStudyTimeSecond" />
     <result column="lesson_id" jdbcType="VARCHAR" property="lessonId" />
+    <result column="class_id" jdbcType="VARCHAR" property="classId" />
   </resultMap>
   <sql id="Base_Column_List">
-    course_id,lesson_id, course_name, course_study_time_hour, course_study_time_min, course_study_time_second
+    course_id,class_id,lesson_id, course_name, course_study_time_hour, course_study_time_min, course_study_time_second
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -23,10 +24,10 @@
     where course_id = #{courseId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.neo.entity.Course">
-    insert into course (course_id,lesson_id, course_name, course_study_time_hour,
+    insert into course (course_id,lesson_id,class_id, course_name, course_study_time_hour,
       course_study_time_min, course_study_time_second
       )
-    values (#{courseId,jdbcType=VARCHAR},#{lessonId,jdbcType=VARCHAR} , #{courseName,jdbcType=VARCHAR}, #{courseStudyTimeHour,jdbcType=INTEGER},
+    values (#{courseId,jdbcType=VARCHAR},#{lessonId,jdbcType=VARCHAR} ,#{classId,jdbcType=VARCHAR} , #{courseName,jdbcType=VARCHAR}, #{courseStudyTimeHour,jdbcType=INTEGER},
       #{courseStudyTimeMin,jdbcType=INTEGER}, #{courseStudyTimeSecond,jdbcType=INTEGER}
       )
   </insert>
@@ -38,6 +39,9 @@
       </if>
       <if test="lessonId != null">
         lesson_id,
+      </if>
+      <if test="classId != null">
+        class_id,
       </if>
       <if test="courseName != null">
         course_name,
@@ -58,6 +62,9 @@
       </if>
       <if test="lessonId != null">
         #{lessonId,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=VARCHAR},
       </if>
       <if test="courseName != null">
         #{courseName,jdbcType=VARCHAR},
@@ -107,5 +114,10 @@
   <select id="selectByLessonId" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from course where lesson_id = #{lessonId}
+  </select>
+
+  <select id="selectByClassId" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from course where class_id = #{classId}
   </select>
 </mapper>

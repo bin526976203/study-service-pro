@@ -2,6 +2,9 @@ package com.neo.mapper;
 
 
 import com.neo.entity.Lesson;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface LessonMapper {
     int deleteByPrimaryKey(String lessonId);
@@ -15,4 +18,11 @@ public interface LessonMapper {
     int updateByPrimaryKeySelective(Lesson record);
 
     int updateByPrimaryKey(Lesson record);
+
+    /**
+     *
+     * @param classId
+     * @return
+     */
+    List<Lesson> selectByClassId(@Param("classId") String classId);
 }

@@ -15,6 +15,8 @@ public class Course {
 
     private String lessonId;
 
+    private String classId;
+
     public Course() {}
 
     public Course(String courseId, String lessonId, Integer courseStudyTimeHour, Integer courseStudyTimeMin, Integer courseStudyTimeSecond) {
@@ -31,6 +33,7 @@ public class Course {
         course.setCourseId(courseInfo.getCourseId());
         course.setCourseStudyTimeHour(courseInfo.getCourseHour());
         course.setCourseStudyTimeMin(courseInfo.getCourseMin());
+        course.setClassId(courseInfo.getClassId());
 
         return course;
     }
@@ -81,5 +84,13 @@ public class Course {
 
     public void setLessonId(String lessonId) {
         this.lessonId = lessonId;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
     }
 }

@@ -23,6 +23,12 @@ public class UserInfo {
     @Excel(name = "name")
     private String name;
 
+    @Excel(name = "classid")
+    private String classId;
+
+    @Excel(name = "lessonname")
+    private String lessonName;
+
     public String getAccount() {
         return account;
     }
@@ -61,5 +67,21 @@ public class UserInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public String getLessonName() {
+        return lessonName;
+    }
+
+    public void setLessonName(String lessonName) {
+        this.lessonName = lessonName;
     }
 }
