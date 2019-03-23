@@ -146,4 +146,12 @@
   <select id="getUserCount" resultType="java.lang.Long">
     select count(*) from user
   </select>
+
+  <select id="getUserByIdCards" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from user where idcard in
+    <foreach collection="list" item="idCard" open="(" close=")" separator=",">
+      #{idCard}
+    </foreach>
+  </select>
 </mapper>

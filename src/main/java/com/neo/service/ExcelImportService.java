@@ -123,4 +123,18 @@ public class ExcelImportService {
         return lessons;
     }
 
+
+    public List<UserInfo> getNoIdUserInfo(List<UserInfo> userInfoList, List<User> users) {
+        List<UserInfo> noIdUserInfo = Lists.newArrayList();
+
+        Map<String, List<User>> usersMap = users.stream().collect(Collectors.groupingBy(User::getIdcard));
+
+        userInfoList.forEach(userInfo ->{
+            if (!usersMap.containsKey(userInfo.getAccount())) {
+                noIdUserInfo.add(userInfo);
+            }
+        });
+
+        return noIdUserInfo;
+    }
 }

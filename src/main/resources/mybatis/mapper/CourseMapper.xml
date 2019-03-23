@@ -119,5 +119,6 @@
   <select id="selectByClassId" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from course where class_id = #{classId}
+    order by lesson_id
   </select>
 </mapper>

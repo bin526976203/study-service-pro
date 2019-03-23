@@ -2,6 +2,9 @@ package com.neo.mapper;
 
 
 import com.neo.entity.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface UserMapper {
     int deleteByPrimaryKey(String idcard);
@@ -19,4 +22,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     Long getUserCount();
+
+    List<User> getUserByIdCards(@Param("list") List<String> idCards);
 }
