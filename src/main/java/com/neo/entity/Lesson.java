@@ -1,7 +1,10 @@
 package com.neo.entity;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class Lesson {
     private String lessonId;
 
@@ -31,75 +34,5 @@ public class Lesson {
         this.lessonStudySecond = lessonStudySecond;
     }
 
-    public String getLessonId() {
-        return lessonId;
-    }
 
-    public void setLessonId(String lessonId) {
-        this.lessonId = lessonId == null ? null : lessonId.trim();
-    }
-
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId == null ? null : courseId.trim();
-    }
-
-    public String getLessonName() {
-        return lessonName;
-    }
-
-    public void setLessonName(String lessonName) {
-        this.lessonName = lessonName == null ? null : lessonName.trim();
-    }
-
-    public Integer getLessonStudyHour() {
-        return lessonStudyHour;
-    }
-
-    public void setLessonStudyHour(Integer lessonStudyHour) {
-        this.lessonStudyHour = lessonStudyHour;
-    }
-
-    public Integer getLessonStudyMin() {
-        return lessonStudyMin;
-    }
-
-    public void setLessonStudyMin(Integer lessonStudyMin) {
-        this.lessonStudyMin = lessonStudyMin;
-    }
-
-    public Integer getLessonStudySecond() {
-        return lessonStudySecond;
-    }
-
-    public void setLessonStudySecond(Integer lessonStudySecond) {
-        this.lessonStudySecond = lessonStudySecond;
-    }
-
-    public String getClassId() {
-        return classId;
-    }
-
-    public void setClassId(String classId) {
-        this.classId = classId;
-    }
-
-    public String getBmId() {
-        return bmId;
-    }
-
-    public void setBmId(String bmId) {
-        this.bmId = bmId;
-    }
-
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
 }
